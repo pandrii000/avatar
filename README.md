@@ -5,6 +5,7 @@
 | Input | Output |
 | - | - |
 | ![](./input/photo.jpg) | ![](./output/avatar.jpg) |
+| ![](./input/photo.jpg) | ![](./output/avatar-ua.jpg) |
 
 ## Usage
 
