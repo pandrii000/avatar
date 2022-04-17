@@ -21,8 +21,23 @@ def crop_center_square(img):
     return img
 
 
+def create_back(img, ins_mask, color: str):
+    if color == 'ua':
+        back = np.zeros_like(img).astype('uint8')
+        # blue
+        back[: back.shape[0] // 2, :] = back[: back.shape[0] // 2, :] + hex2rgb('#005BBB')
+        # yellow
+        back[back.shape[0] // 2 :, :] = back[back.shape[0] // 2 :, :] + hex2rgb('#FFD500')
+    else:
+        back = (np.zeros_like(img) + hex2rgb(color)).astype('uint8')
+
+    back = cv2.bitwise_and(back, ins_mask)
+    return back
+
+
 def avatar(input_path: str, color: str, output_path: str):
     img = cv2.imread(input_path)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     img = crop_center_square(img)
 
@@ -34,11 +49,11 @@ def avatar(input_path: str, color: str, output_path: str):
 
     img = cv2.bitwise_and(img, out_mask)
 
-    back = (np.zeros_like(img) + hex2rgb(color)).astype('uint8')
-    back = cv2.bitwise_and(back, ins_mask)
+    back = create_back(img, ins_mask, color)
 
     img = img + back
 
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
     cv2.imwrite(output_path, img, [cv2.IMWRITE_JPEG_QUALITY, 100])
 
 
