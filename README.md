@@ -15,6 +15,7 @@ Move your photo to `./input/photo.jpg` and run:
 python main.py \
     --input ./input/photo.jpg \
     --color #616DF8 \
+    --pad "10% 10% 10% 10%" \
     --output ./output/avatar.jpg
 ```
 
