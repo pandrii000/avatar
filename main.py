@@ -35,9 +35,28 @@ def create_back(img, ins_mask, color: str):
     return back
 
 
-def avatar(input_path: str, color: str, output_path: str):
+def pad_image(img, pad):
+    H, W = img.shape[:2]
+    pad = list(map(lambda x: float(x.replace('%', '')) / 100, pad.split(' ')))
+    extra_left = round(W * pad[3])
+    extra_right = round(W * pad[1])
+    extra_top = round(H * pad[0])
+    extra_bottom = round(H * pad[2])
+    img = np.pad(
+        img,
+        ((extra_top, extra_bottom),
+         (extra_left, extra_right),
+         (0, 0)),
+        mode='constant',
+        constant_values=0,
+    )
+    return img
+
+
+def avatar(input_path: str, color: str, pad: str, output_path: str):
     img = cv2.imread(input_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img = pad_image(img, pad)
 
     img = crop_center_square(img)
 
@@ -61,7 +80,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--input', default='./input/photo.jpg')
     parser.add_argument('--color', default='#5B4B49')
+    parser.add_argument('--pad', default='10% 10% 10% 10%') # top right botton left
     parser.add_argument('--output', default='./output/avatar.jpg')
     args = parser.parse_args()
 
-    avatar(args.input, args.color, args.output)
+    avatar(args.input, args.color, args.pad, args.output)
